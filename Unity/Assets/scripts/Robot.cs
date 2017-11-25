@@ -6,9 +6,9 @@ using System;
 public class Robot : MonoBehaviour
 {
 	private Rigidbody rb;
-	private float velocidad = 4f;		// metros/segundos
-	private float velocidadGiro = 180f;	// grados/segundos
-	private float pendienteGirar = 0f;
+	private float speed = 4f;		// metros/segundos
+	private float rotationSpeed = 180f;	// grados/segundos
+	private float remainingRotation = 0f;
 
 	// Use this for initialization
 	void Awake ()
@@ -20,27 +20,24 @@ public class Robot : MonoBehaviour
 	void Update ()
 	{
 		if (Input.GetKeyDown (KeyCode.RightArrow)) {
-			pendienteGirar += 90;
+			remainingRotation += 90;
 		}
 		if (Input.GetKeyDown (KeyCode.LeftArrow)) {
-			pendienteGirar -= 90;
+			remainingRotation -= 90;
 		}
-		Mover ();
-		Girar ();
+		Move ();
+		Rotate ();
 	}
 
-	private void Mover ()
+	private void Move ()
 	{
-		if (pendienteGirar == 0) {
-			transform.Translate (Vector3.forward * velocidad * Time.deltaTime);
-		}
+		if (remainingRotation == 0)
+			transform.Translate (Vector3.forward * speed * Time.deltaTime);
 	}
 
 
 	void OnTriggerEnter (Collider collider)
 	{
-		//if (pendienteGirar != 0)
-		//	pendienteGirar = 90;
 	}
 	void OnTriggerStay (Collider collider)
 	{
@@ -49,15 +46,15 @@ public class Robot : MonoBehaviour
 	{
 	}
 
-	private void Girar ()
+	private void Rotate ()
 	{
-		if (pendienteGirar != 0) {
-			int direccion = pendienteGirar > 1 ? 1 : -1;
-			float giro = velocidadGiro * Time.deltaTime * direccion;
-			if (Math.Abs(pendienteGirar) < Math.Abs(giro))
-				giro = pendienteGirar;
-			pendienteGirar -= giro;
-			transform.Rotate (new Vector3 (0, giro, 0));
+		if (remainingRotation != 0) {
+			int direction = remainingRotation > 1 ? 1 : -1;
+			float rotate = rotationSpeed * Time.deltaTime * direction;
+			if (Math.Abs(remainingRotation) < Math.Abs(rotate))
+				rotate = remainingRotation;
+			remainingRotation -= rotate;
+			transform.Rotate (new Vector3 (0, rotate, 0));
 		}
 	}
 }
