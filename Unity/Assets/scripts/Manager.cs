@@ -27,8 +27,11 @@ public class Manager : MonoBehaviour
 		if (Input.GetKeyDown (KeyCode.R))
 			SceneManager.LoadScene (SceneManager.GetActiveScene ().name);
 
-		if (Input.GetKeyDown (KeyCode.Plus))
-			Time.timeScale += .5f;
+        if (Input.GetKeyDown(KeyCode.Equals)) {
+            Debug.Log("asdf");
+            Time.timeScale += .5f;
+        }
+			
 		if (Input.GetKeyDown (KeyCode.Minus))
 			Time.timeScale = Math.Max (Time.timeScale - .5f, 0);
 	}
