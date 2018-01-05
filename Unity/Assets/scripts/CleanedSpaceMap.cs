@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class cleanedSpaceMap
+public class CleanedSpaceMap
 {
     private float gridWidth;
     private HashSet<Vector2Int> cleanedPositions = new HashSet<Vector2Int>();
     private Vector2 playerPosition = new Vector2(0, 0);
 
-    public cleanedSpaceMap(float gridWidth)
+    public CleanedSpaceMap(float gridWidth)
     {
         this.gridWidth = gridWidth;
     }
@@ -18,8 +18,7 @@ public class cleanedSpaceMap
         int x = (int)(playerPosition.x / gridWidth);
         int y = (int)(playerPosition.y / gridWidth);
         Vector2Int newPosition = new Vector2Int(x, y);
-        if (cleanedPositions.Add(newPosition))
-            Debug.Log(newPosition);
+        cleanedPositions.Add(newPosition);
     }
 
     public int getNumCleanedPositions()

@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System;
 using System.Collections.Generic;
-using System.Collections;
 
 public class Robot : MonoBehaviour
 {
@@ -14,7 +13,8 @@ public class Robot : MonoBehaviour
     private Dictionary<string, bool> sensors = new Dictionary<string, bool>();
 
     private float absoluteRotationDeg = 0.0f;
-    private cleanedSpaceMap map;
+    private CleanedSpaceMap map;
+    private Perceptron brain = new Perceptron();
 
     void Awake()
     {
@@ -25,15 +25,30 @@ public class Robot : MonoBehaviour
         sensors.Add("Front Button", false);
         sensors.Add("Right Button", false);
         sensors.Add("Right Wall Sensor", false);
+
+        float[] ADN = brain.getPerceptronADN();
+        Debug.Log(arrayToString(ADN));
+        Perceptron brain2 = new Perceptron(ADN);
+        float[] ADN2 = brain.getPerceptronADN();
+        Debug.Log(arrayToString(ADN2));
+    }
+
+    private String arrayToString(float[] array)
+    {
+        String finalString = "(";
+        foreach (float val in array)
+            finalString += val + ',';
+        return finalString + ')';
+
     }
 
     private void Start()
     {
         float elementWidth = GetComponent<Renderer>().bounds.size.x;
-        map = new cleanedSpaceMap(elementWidth);
+        map = new CleanedSpaceMap(elementWidth);
     }
 
-    void FixedUpdate()
+    void Update()
     {
         if (!sensors["Left Sensor"] &&
             !sensors["Front Sensor"] &&
