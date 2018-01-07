@@ -10,7 +10,7 @@ public class LearningSceneManager : MonoBehaviour
 
     void Start()
     {
-        Time.timeScale = 10;
+        Time.timeScale = 10f;
         NewGeneration();
     }
 

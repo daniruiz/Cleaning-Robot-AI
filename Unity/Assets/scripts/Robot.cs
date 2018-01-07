@@ -45,9 +45,9 @@ public class Robot : MonoBehaviour
 
     void Update()
     {
-        sensors["Left Grid Cleaned"] = IsLeftGridCleaned();
-        sensors["Front Grid Cleaned"] = IsFrontGridCleaned();
-        sensors["Right Grid Cleaned"] = IsRightGridCleaned();
+        sensors["Left Grid Cleaned"] = map.IsLeftGridCleaned();
+        sensors["Front Grid Cleaned"] = map.IsFrontGridCleaned();
+        sensors["Right Grid Cleaned"] = map.IsRightGridCleaned();
 
         String s = "";
         s += sensors["Left Grid Cleaned"] ? "<" : " ";
@@ -68,41 +68,18 @@ public class Robot : MonoBehaviour
         Move();
     }
 
-    private bool IsLeftGridCleaned()
-    {
-        float x = map.GetPlayerPosition().x + (robotWidth * 1.4f * (float)Math.Sin((Math.PI / 180) * (absoluteRotationDeg - 90)));
-        float y = map.GetPlayerPosition().y + (robotWidth * 1.4f * (float)Math.Cos((Math.PI / 180) * (absoluteRotationDeg - 90)));
-        return map.IsGridCleaned(new Vector2(x, y));
-    }
-    private bool IsFrontGridCleaned()
-    {
-        float x = map.GetPlayerPosition().x + (robotWidth * 1.4f * (float)Math.Sin((Math.PI / 180) * absoluteRotationDeg));
-        float y = map.GetPlayerPosition().y + (robotWidth * 1.4f * (float)Math.Cos((Math.PI / 180) * absoluteRotationDeg));
-        return map.IsGridCleaned(new Vector2(x, y));
-    }
-    private bool IsRightGridCleaned()
-    {
-        float x = map.GetPlayerPosition().x + (robotWidth * 1.4f * (float)Math.Sin((Math.PI / 180) * (absoluteRotationDeg + 90)));
-        float y = map.GetPlayerPosition().y + (robotWidth * 1.4f * (float)Math.Cos((Math.PI / 180) * (absoluteRotationDeg + 90)));
-        return map.IsGridCleaned(new Vector2(x, y));
-    }
-
     private void Move()
     {
         float displacement = speed * Time.deltaTime;
         transform.Translate(Vector3.forward * displacement);
-
-        float xAxisDisplacement = displacement * (float)Math.Sin((Math.PI / 180) * absoluteRotationDeg);
-        float yAxisDisplacement = displacement * (float)Math.Cos((Math.PI / 180) * absoluteRotationDeg);
-
-        map.MovePlayerPosition(new Vector2(xAxisDisplacement, yAxisDisplacement));
+        map.MovePlayerPosition(displacement);
     }
 
     private void Rotate()
     {
         float rotation = rotationSpeed * Time.deltaTime * 60;
         transform.Rotate(new Vector3(0, rotation, 0));
-        absoluteRotationDeg = (absoluteRotationDeg + rotation) % 360;
+        map.UpdateDirectionAngle(rotation);
     }
 
     void OnCollisionEnter()
