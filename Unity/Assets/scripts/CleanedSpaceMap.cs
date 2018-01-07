@@ -12,16 +12,31 @@ public class CleanedSpaceMap
         this.gridWidth = gridWidth;
     }
 
-    public void movePlayerPosition(Vector2 movement)
+    public void MovePlayerPosition(Vector2 movement)
     {
         playerPosition += movement;
-        int x = (int)(playerPosition.x / gridWidth);
-        int y = (int)(playerPosition.y / gridWidth);
-        Vector2Int newPosition = new Vector2Int(x, y);
+        Vector2Int newPosition = Vector2ToPosition(playerPosition);
         cleanedPositions.Add(newPosition);
     }
 
-    public int getNumCleanedPositions()
+    private Vector2Int Vector2ToPosition(Vector2 v)
+    {
+        int x = (int)(v.x / gridWidth);
+        int y = (int)(v.y / gridWidth);
+        return new Vector2Int(x, y);
+    }
+
+    public Vector2 GetPlayerPosition()
+    {
+        return playerPosition;
+    }
+
+    public bool IsGridCleaned(Vector2 grid)
+    {
+        return cleanedPositions.Contains(Vector2ToPosition(grid));
+    }
+
+    public int GetNumCleanedPositions()
     {
         return cleanedPositions.Count;
     }

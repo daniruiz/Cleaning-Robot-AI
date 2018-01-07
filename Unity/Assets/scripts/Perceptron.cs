@@ -3,18 +3,16 @@
 public class Perceptron
 {
     private float[][][] weights = new float[2][][];
-    private const int NUM_FIRST_LAYER_NEURONS = 9;
 
     public Perceptron()
     {
-        weights[0] = new float[9][];
-        weights[1] = new float[9][];
-
         Random random = new Random();
+        weights[0] = new float[10][];
+        weights[1] = new float[10][];
 
         for (int i = 0; i < weights[0].Length; i++)
         {
-            weights[0][i] = new float[9];
+            weights[0][i] = new float[10];
             for (int j = 0; j < weights[0][i].Length; j++)
                 weights[0][i][j] = (float)(random.NextDouble()) * 2.0f - 1.0f;
         }
@@ -28,15 +26,13 @@ public class Perceptron
 
     public Perceptron(float[] newWeights)
     {
-        weights[0] = new float[9][];
-        weights[1] = new float[9][];
-
-        Random random = new Random();
+        weights[0] = new float[10][];
+        weights[1] = new float[10][];
 
         int newWeightsPosition = 0;
         for (int i = 0; i < weights[0].Length; i++)
         {
-            weights[0][i] = new float[9];
+            weights[0][i] = new float[10];
             for (int j = 0; j < weights[0][i].Length; j++)
             {
                 weights[0][i][j] = newWeights[newWeightsPosition];
@@ -54,25 +50,37 @@ public class Perceptron
         }
     }
 
-    public float[] guess(float[] inputs)
+
+
+    public float[] Guess(bool[] inputs)
     {
-        return new float[0];
+        float[] normalizedInputs = new float[inputs.Length];
+        for (int i = 0; i < inputs.Length; i++)
+            normalizedInputs[i] = inputs[i] ? 1f : -1f;
+        return new float[] { OutputValue(2, 0, normalizedInputs), OutputValue(2, 1, normalizedInputs) };
     }
 
-    private float outputValue(int layer, int position, float[] inputs)
+    private float OutputValue(int layer, int position, float[] inputs)
     {
-        if (layer == 0) // is an input
+        if (layer == 0)
             return inputs[position];
-        return sigmoid();
+
+        float finalValue = 0f;
+        for (int i = 0; i < weights[layer - 1].Length; i++)
+            finalValue += OutputValue(layer - 1, i, inputs) * weights[layer - 1][i][position];
+
+        return ActivationFunction(finalValue);
     }
 
-
-    private float sigmoid(double value)
+    private float ActivationFunction(double value)
     {
         return 1.0f / (1.0f + (float)Math.Exp(-value));
     }
 
-    public float[] getPerceptronADN() {
+
+
+    public float[] GetPerceptronADN()
+    {
         int numWeights = weights[0].Length * weights[0][0].Length + weights[1].Length * weights[1][0].Length;
         float[] ADN = new float[numWeights];
 

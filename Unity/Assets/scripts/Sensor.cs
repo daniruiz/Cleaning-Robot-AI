@@ -2,20 +2,20 @@
 
 public class Sensor : MonoBehaviour
 {
-	private Robot robot;
+    private Robot robot;
 
-	void Awake ()
-	{
-		robot = GetComponentInParent<Robot> ();
-	}
+    void Awake()
+    {
+        robot = GetComponentInParent<Robot>();
+    }
 
-	void OnTriggerStay (Collider other)
-	{
-		robot.updateSensorState (this.name, true);
-	}
+    void OnTriggerStay(Collider other)
+    {
+        robot.UpdateSensorState(this.name, true);
+    }
 
-	void OnTriggerExit (Collider other)
-	{
-		robot.updateSensorState (this.name, false);
-	}
+    void OnTriggerExit(Collider other)
+    {
+        robot.UpdateSensorState(this.name, false);
+    }
 }
