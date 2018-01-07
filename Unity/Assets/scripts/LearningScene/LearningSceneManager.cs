@@ -4,7 +4,8 @@ using UnityEngine.SceneManagement;
 
 public class LearningSceneManager : MonoBehaviour
 {
-    public GameObject robot;
+    public GameObject robotInstance;
+    private GameObject actualRobot;
     private int generation = 0;
     private int robotNum = 0;
 
@@ -24,6 +25,8 @@ public class LearningSceneManager : MonoBehaviour
             if (Time.timeScale == 1) Time.timeScale = 10;
             else
                 Time.timeScale += 10;
+        if (Input.GetKeyDown(KeyCode.Delete))
+            actualRobot.GetComponent<Robot>().Die();
         if (Input.GetKeyDown(KeyCode.Minus))
             if (Time.timeScale == 1) Time.timeScale = 0;
             else
@@ -45,13 +48,30 @@ public class LearningSceneManager : MonoBehaviour
 
     private void NewGeneration()
     {
-        AddRobot();
+        robotNum = 0;
         generation++;
+        AddRobot();
+    }
+
+    private float[] Reproduce(float[] parent1ADN, float[] parent2ADN)
+    {
+        return Mutate(new float[] { });
+    }
+
+    private float[] Mutate(float[] ADN)
+    {
+        return new float[] { };
     }
 
     private void AddRobot()
     {
-        Instantiate(robot);
+        if (robotNum == 10)
+        {
+            NewGeneration();
+            return;
+        }
+
+        actualRobot = Instantiate(robotInstance);
         robotNum++;
     }
 
@@ -62,10 +82,11 @@ public class LearningSceneManager : MonoBehaviour
         AddRobot();
     }
 
-    private String arrayToString<T>(T[] array) {
+    private String arrayToString<T>(T[] array)
+    {
         String s = "";
         foreach (T val in array)
-            s += val + ", "; 
+            s += val + ", ";
         return s;
     }
 }

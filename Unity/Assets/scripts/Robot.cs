@@ -13,15 +13,12 @@ public class Robot : MonoBehaviour
 
     private float absoluteRotationDeg = 0.0f;
     private float robotWidth;
-    private bool collision = false;
+    private bool dead = false;
     private CleanedSpaceMap map;
     private Perceptron brain;
 
     void Awake()
     {
-        manager = GameObject.Find("Manager").GetComponent<LearningSceneManager>();
-
-
         sensors.Add("Left Sensor", false);
         sensors.Add("Front Sensor", false);
         sensors.Add("Right Sensor", false);
@@ -38,6 +35,8 @@ public class Robot : MonoBehaviour
 
     void Start()
     {
+        manager = GameObject.Find("Manager").GetComponent<LearningSceneManager>();
+
         robotWidth = GetComponent<Renderer>().bounds.size.x;
         map = new CleanedSpaceMap(robotWidth);
         brain = new Perceptron();
@@ -48,13 +47,6 @@ public class Robot : MonoBehaviour
         sensors["Left Grid Cleaned"] = map.IsLeftGridCleaned();
         sensors["Front Grid Cleaned"] = map.IsFrontGridCleaned();
         sensors["Right Grid Cleaned"] = map.IsRightGridCleaned();
-
-        String s = "";
-        s += sensors["Left Grid Cleaned"] ? "<" : " ";
-        s += sensors["Front Grid Cleaned"] ? "^" : " ";
-        s += sensors["Right Grid Cleaned"] ? ">" : " ";
-        Debug.Log(s);
-
 
         bool[] sensorsArray = new bool[sensors.Count];
         sensors.Values.CopyTo(sensorsArray, 0);
@@ -84,8 +76,13 @@ public class Robot : MonoBehaviour
 
     void OnCollisionEnter()
     {
-        if (collision) return;
-        collision = true;
+        Die();
+    }
+
+    public void Die()
+    {
+        if (dead) return;
+        dead = true;
         float[] ADN = brain.GetPerceptronADN();
         int fitness = map.GetNumCleanedPositions();
         manager.RobotDied(ADN, fitness);

@@ -6,12 +6,13 @@ public class CleanedSpaceMap
 {
     private float gridWidth;
     private HashSet<Vector2Int> cleanedPositions = new HashSet<Vector2Int>();
-    private Vector2 playerPosition = new Vector2(0, 0);
+    private Vector2 playerPosition;
     private float directionAngle;
 
     public CleanedSpaceMap(float gridWidth)
     {
         this.gridWidth = gridWidth;
+        playerPosition = new Vector2(gridWidth / 2, gridWidth / 2);
     }
 
     public void MovePlayerPosition(float displacement)
@@ -28,30 +29,41 @@ public class CleanedSpaceMap
         directionAngle = (directionAngle + angle) % 360;
     }
 
-    private Vector2Int Vector2ToPosition(Vector2 v)
-    {
-        int x = (int)(v.x / gridWidth);
-        int y = (int)(v.y / gridWidth);
-        return new Vector2Int(x, y);
-    }
-
     public bool IsLeftGridCleaned()
     {
-        float x = playerPosition.x + (gridWidth * (float)Math.Sin((Math.PI / 180) * (directionAngle - 90)));
-        float y = playerPosition.y + (gridWidth * (float)Math.Cos((Math.PI / 180) * (directionAngle - 90)));
-        return IsGridCleaned(new Vector2(x, y));
+        return IsGridCleaned(AdjacentGrid("Left"));
     }
     public bool IsFrontGridCleaned()
     {
-        float x = playerPosition.x + (gridWidth * (float)Math.Sin((Math.PI / 180) * directionAngle));
-        float y = playerPosition.y + (gridWidth * (float)Math.Cos((Math.PI / 180) * directionAngle));
-        return IsGridCleaned(new Vector2(x, y));
+        return IsGridCleaned(AdjacentGrid("Front"));
     }
     public bool IsRightGridCleaned()
     {
-        float x = playerPosition.x + (gridWidth * (float)Math.Sin((Math.PI / 180) * (directionAngle + 90)));
-        float y = playerPosition.y + (gridWidth * (float)Math.Cos((Math.PI / 180) * (directionAngle + 90)));
-        return IsGridCleaned(new Vector2(x, y));
+        return IsGridCleaned(AdjacentGrid("Right"));
+    }
+
+    public int GetNumCleanedPositions()
+    {
+        return cleanedPositions.Count;
+    }
+
+
+
+    private Vector2Int Vector2ToPosition(Vector2 v)
+    {
+        int x = (int)Math.Floor((v.x / gridWidth));
+        int y = (int)Math.Floor((v.y / gridWidth));
+        return new Vector2Int(x, y);
+    }
+
+    private Vector2 AdjacentGrid(String side)
+    {
+        Vector2Int position = Vector2ToPosition(playerPosition);
+        int degreesDiference = side == "Left" ? -90
+                                   : (side == "Front" ? 0 : 90);
+        float x = (position.x * gridWidth) + (gridWidth / 2) + (gridWidth * (float)Math.Sin((Math.PI / 180) * (directionAngle + degreesDiference)));
+        float y = (position.y * gridWidth) + (gridWidth / 2) + (gridWidth * (float)Math.Cos((Math.PI / 180) * (directionAngle + degreesDiference)));
+        return new Vector2(x, y);
     }
 
     private bool IsGridCleaned(Vector2Int grid)
@@ -62,10 +74,5 @@ public class CleanedSpaceMap
     private bool IsGridCleaned(Vector2 grid)
     {
         return IsGridCleaned(Vector2ToPosition(grid));
-    }
-
-    public int GetNumCleanedPositions()
-    {
-        return cleanedPositions.Count;
     }
 }

@@ -260,7 +260,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34007e04e12832147b0514fbe7b9c05d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  robot: {fileID: 1246466956655388, guid: 295d8ae94eb742848a1102faa488ef1b, type: 2}
+  robotInstance: {fileID: 1246466956655388, guid: 295d8ae94eb742848a1102faa488ef1b,
+    type: 2}
 --- !u!4 &164374948
 Transform:
   m_ObjectHideFlags: 0
