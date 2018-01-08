@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System;
 using System.Collections.Generic;
 
 public class Robot : MonoBehaviour
@@ -32,14 +31,12 @@ public class Robot : MonoBehaviour
         sensors.Add("Right Grid Cleaned", false);
     }
 
-
     void Start()
     {
         manager = GameObject.Find("Manager").GetComponent<LearningSceneManager>();
 
         robotWidth = GetComponent<Renderer>().bounds.size.x;
         map = new CleanedSpaceMap(robotWidth);
-        brain = new Perceptron();
     }
 
     void Update()
@@ -60,13 +57,21 @@ public class Robot : MonoBehaviour
         Move();
     }
 
+    public void setADN()
+    {
+        brain = new Perceptron();
+    }
+
+    public void setADN(float[] ADN) {
+        brain = new Perceptron(ADN);
+    }
+
     private void Move()
     {
         float displacement = speed * Time.deltaTime;
         transform.Translate(Vector3.forward * displacement);
         map.MovePlayerPosition(displacement);
     }
-
     private void Rotate()
     {
         float rotation = rotationSpeed * Time.deltaTime * 60;
@@ -78,7 +83,6 @@ public class Robot : MonoBehaviour
     {
         Die();
     }
-
     public void Die()
     {
         if (dead) return;
@@ -88,6 +92,7 @@ public class Robot : MonoBehaviour
         manager.RobotDied(ADN, fitness);
         Destroy(gameObject);
     }
+
 
 
     public void UpdateSensorState(string name, bool value)
