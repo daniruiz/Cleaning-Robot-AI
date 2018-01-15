@@ -10,7 +10,7 @@ public class Robot : MonoBehaviour
 
     private Dictionary<string, bool> sensors = new Dictionary<string, bool>();
 
-    private float absoluteRotationDeg = 0.0f;
+    private float absoluteRotationDeg = 0;
     private float robotWidth;
     private bool dead = false;
     private CleanedSpaceMap map;

@@ -26,7 +26,7 @@ public class LearningSceneManager : MonoBehaviour
 
     void Start()
     {
-        Time.timeScale = 10f;
+        Time.timeScale = 1f;
         NewGeneration();
     }
 
@@ -36,7 +36,7 @@ public class LearningSceneManager : MonoBehaviour
             Application.Quit();
         if (Input.GetKeyDown(KeyCode.R))
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        if (Input.GetKeyDown(KeyCode.Equals))
+        if (Input.GetKeyDown(KeyCode.Plus))
             if (Time.timeScale == 1) Time.timeScale = 10;
             else
                 Time.timeScale += 10;
@@ -101,6 +101,12 @@ public class LearningSceneManager : MonoBehaviour
 
     private float[] Mutate(float[] ADN)
     {
+        /*System.Random random = new System.Random();
+        if(random.Next(1,10) == 1)
+            for (int i = 0; i < ADN.Length; i++)
+                if (random.Next(1, 50) == 1)
+                    ADN[i] = (float)(random.NextDouble()) * 2.0f - 1.0f;
+        return ADN;*/
         System.Random random = new System.Random();
         int val;
         for (int i = 0; i < ADN.Length; i++)

@@ -48,7 +48,6 @@ public class CleanedSpaceMap
     }
 
 
-
     private Vector2Int Vector2ToPosition(Vector2 v)
     {
         int x = (int)Math.Floor((v.x / gridWidth));
