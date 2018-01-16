@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 
 public class LearningSceneManager : MonoBehaviour
 {
+    private const String version = "2"; 
+
     public GameObject robotInstance;
     private GameObject actualRobot;
     private int generation = 0;
@@ -36,7 +38,7 @@ public class LearningSceneManager : MonoBehaviour
             Application.Quit();
         if (Input.GetKeyDown(KeyCode.R))
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        if (Input.GetKeyDown(KeyCode.Plus))
+        if (Input.GetKeyDown(KeyCode.Plus) || Input.GetKeyDown(KeyCode.Equals))
             if (Time.timeScale == 1) Time.timeScale = 10;
             else
                 Time.timeScale += 10;
@@ -50,7 +52,8 @@ public class LearningSceneManager : MonoBehaviour
 
     void OnGUI()
     {
-        string text = "\n    Controls\n\n" +
+        string text = "\n    Version: " + version + "\n\n" +
+                      "\n    Controls\n\n" +
                       "      +\tfaster\n" +
                       "      -\tslower\n" +
                       "      R\trestart\n" +
@@ -58,7 +61,7 @@ public class LearningSceneManager : MonoBehaviour
                       "    Speed: " + Math.Round(Time.timeScale, 1) + "\n\n" +
                       "    Generation: " + generation + "\n" +
                       "    Robot Num.: " + robotNum;
-        GUI.TextField(new Rect(10, 10, 200, 370), text);
+        GUI.TextField(new Rect(10, 10, 200, 300), text);
     }
 
     private void NewGeneration()
