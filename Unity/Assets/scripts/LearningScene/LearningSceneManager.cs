@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class LearningSceneManager : MonoBehaviour
 {
-    private const String version = "2"; 
+    private const String version = "2c"; 
 
     public GameObject robotInstance;
     private GameObject actualRobot;
@@ -39,15 +39,11 @@ public class LearningSceneManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         if (Input.GetKeyDown(KeyCode.Plus) || Input.GetKeyDown(KeyCode.Equals))
-            if (Time.timeScale == 1) Time.timeScale = 10;
-            else
-                Time.timeScale += 10;
+            Time.timeScale += 1;
         if (Input.GetKeyDown(KeyCode.Delete))
             actualRobot.GetComponent<Robot>().Die();
         if (Input.GetKeyDown(KeyCode.Minus))
-            if (Time.timeScale == 1) Time.timeScale = 0;
-            else
-                Time.timeScale = Math.Max(Time.timeScale - 10, 1);
+            Time.timeScale -= 1;
     }
 
     void OnGUI()

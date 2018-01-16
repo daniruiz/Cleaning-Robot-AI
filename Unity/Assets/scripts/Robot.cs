@@ -54,6 +54,10 @@ public class Robot : MonoBehaviour
         
         speed = outputValues[0];
         rotationSpeed = outputValues[1] * 2.0f - 1.0f;
+        if(0.475f < outputValues[1] && outputValues[1] < 0.525){
+            rotationSpeed = 0;
+            speed = 1;
+        }
 
         Rotate();
         Move();
