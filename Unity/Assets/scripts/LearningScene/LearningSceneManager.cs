@@ -11,6 +11,9 @@ public class LearningSceneManager : MonoBehaviour
     private int generation = 0;
     private int robotNum = 0;
 
+    private float[] bestRobotADN;
+    private int bestRobotFitness = 0;
+
     private struct robotInfo
     {
         public int fitness;
@@ -38,12 +41,20 @@ public class LearningSceneManager : MonoBehaviour
             Application.Quit();
         if (Input.GetKeyDown(KeyCode.R))
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        if (Input.GetKeyDown(KeyCode.Plus) || Input.GetKeyDown(KeyCode.Equals))
-            Time.timeScale += 1;
         if (Input.GetKeyDown(KeyCode.Delete))
             actualRobot.GetComponent<Robot>().Die();
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            TextEditor te = new TextEditor();
+            te.content = new GUIContent(
+                Miscellaneous.arrayToString<float>(bestRobotADN));
+            te.SelectAll();
+            te.Copy();
+        }
+        if (Input.GetKeyDown(KeyCode.Plus) || Input.GetKeyDown(KeyCode.Equals))
+            Time.timeScale = Math.Min(Time.timeScale + 1, 15);
         if (Input.GetKeyDown(KeyCode.Minus))
-            Time.timeScale -= 1;
+            Time.timeScale = Math.Max(Time.timeScale - 1, 0);
     }
 
     void OnGUI()
@@ -52,13 +63,15 @@ public class LearningSceneManager : MonoBehaviour
                       "\n    Controls\n\n" +
                       "      +\tFaster\n" +
                       "      -\tSlower\n" +
+                      "      C\tCopy best ADN to clipboard\n" +
                       "      Del\tKill actual robot\n" +
                       "      R\tRestart\n" +
                       "      Esc\tClose\n\n" +
                       "    Speed: " + Math.Round(Time.timeScale, 1) + "\n\n" +
+                      "    Fitness: " + actualRobot.GetComponent<Robot>().GetFitness() + "\n\n" +
                       "    Generation: " + generation + "\n" +
                       "    Robot Num.: " + robotNum;
-        GUI.TextField(new Rect(10, 10, 200, 300), text);
+        GUI.TextField(new Rect(10, 10, 220, 320), text);
     }
 
     private void NewGeneration()
@@ -81,9 +94,9 @@ public class LearningSceneManager : MonoBehaviour
         robotNum++;
 
         if (generation > 1)
-            actualRobot.GetComponent<Robot>().setADN(GenerateSonADN());
+            actualRobot.GetComponent<Robot>().SetADN(GenerateSonADN());
         else
-            actualRobot.GetComponent<Robot>().setADN();
+            actualRobot.GetComponent<Robot>().SetADN();
     }
 
     private float[] GenerateSonADN()
@@ -126,6 +139,12 @@ public class LearningSceneManager : MonoBehaviour
     public void RobotDied(float[] ADN, int fitness)
     {
         actualGenerationADNs[robotNum - 1] = new robotInfo(fitness, ADN);
+        if(fitness > bestRobotFitness)
+        {
+            bestRobotFitness = fitness;
+            bestRobotADN = ADN;
+
+        }
         AddRobot();
     }
 }

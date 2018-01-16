@@ -11,20 +11,23 @@ public class Robot : MonoBehaviour
 
     private Dictionary<string, bool> sensors = new Dictionary<string, bool>();
 
-    private float absoluteRotationDeg = 0;
     private float robotWidth;
     private bool dead = false;
     private CleanedSpaceMap map;
     private Perceptron brain;
+
+    private int negativeFitness = 0;
 
     void Awake()
     {
         sensors.Add("Left Sensor", false);
         sensors.Add("Front Sensor", false);
         sensors.Add("Right Sensor", false);
+
         sensors.Add("Left Button", false);
         sensors.Add("Front Button", false);
         sensors.Add("Right Button", false);
+        
         sensors.Add("Right Wall Sensor", false);
 
         sensors.Add("Left Grid Cleaned", false);
@@ -46,12 +49,13 @@ public class Robot : MonoBehaviour
         sensors["Front Grid Cleaned"] = map.IsFrontGridCleaned();
         sensors["Right Grid Cleaned"] = map.IsRightGridCleaned();
 
+
+        /*** Ask next action to the brain ***/
+
         bool[] sensorsArray = new bool[sensors.Count];
         sensors.Values.CopyTo(sensorsArray, 0);
 
         float[] outputValues = brain.Guess(sensorsArray);
-
-        
         speed = outputValues[0];
         rotationSpeed = outputValues[1] * 2.0f - 1.0f;
         if(0.475f < outputValues[1] && outputValues[1] < 0.525){
@@ -59,17 +63,32 @@ public class Robot : MonoBehaviour
             speed = 1;
         }
 
+
+        /*** Move the robot ***/
+
         Rotate();
         Move();
+
+        /***  ***/
+
+
+        if(map.WasActualGridCleaned()) // Kill robot if loop
+        {
+            if(GetFitness() == 0) Die();
+            negativeFitness++;
+        }
     }
 
-    public void setADN()
+    public void SetADN()
     {
         brain = new Perceptron();
     }
-
-    public void setADN(float[] ADN) {
+    public void SetADN(float[] ADN) {
         brain = new Perceptron(ADN);
+    }
+
+    public int GetFitness() {
+        return map.GetNumCleanedPositions() - negativeFitness;
     }
 
     private void Move()
@@ -94,14 +113,13 @@ public class Robot : MonoBehaviour
         if (dead) return;
         dead = true;
         float[] ADN = brain.GetPerceptronADN();
-        int fitness = map.GetNumCleanedPositions();
-        manager.RobotDied(ADN, fitness);
+        manager.RobotDied(ADN, GetFitness());
         Destroy(gameObject);
     }
 
 
 
-    public void UpdateSensorState(string name, bool value)
+    public void UpdateSensorState(string name, bool value) // Communication between the sensors and the robot
     {
         sensors[name] = value;
     }
