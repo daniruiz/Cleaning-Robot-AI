@@ -50,10 +50,11 @@ public class LearningSceneManager : MonoBehaviour
     {
         string text = "\n    Version: " + version + "\n\n" +
                       "\n    Controls\n\n" +
-                      "      +\tfaster\n" +
-                      "      -\tslower\n" +
-                      "      R\trestart\n" +
-                      "      Esc\tclose\n\n" +
+                      "      +\tFaster\n" +
+                      "      -\tSlower\n" +
+                      "      Del\tKill actual robot\n" +
+                      "      R\tRestart\n" +
+                      "      Esc\tClose\n\n" +
                       "    Speed: " + Math.Round(Time.timeScale, 1) + "\n\n" +
                       "    Generation: " + generation + "\n" +
                       "    Robot Num.: " + robotNum;
