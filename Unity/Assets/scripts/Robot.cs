@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class Robot : MonoBehaviour
 {
@@ -50,8 +51,9 @@ public class Robot : MonoBehaviour
 
         float[] outputValues = brain.Guess(sensorsArray);
 
+        
         speed = outputValues[0];
-        rotationSpeed = outputValues[1] * 2 - 1;
+        rotationSpeed = outputValues[1] * 2.0f - 1.0f;
 
         Rotate();
         Move();

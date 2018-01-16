@@ -69,6 +69,23 @@ public class LearningSceneManager : MonoBehaviour
         AddRobot();
     }
 
+    private void AddRobot()
+    {
+        if (robotNum == 10)
+        {
+            NewGeneration();
+            return;
+        }
+
+        actualRobot = Instantiate(robotInstance);
+        robotNum++;
+
+        if (generation > 1)
+            actualRobot.GetComponent<Robot>().setADN(GenerateSonADN());
+        else
+            actualRobot.GetComponent<Robot>().setADN();
+    }
+
     private float[] GenerateSonADN()
     {
         int totalFitnessSum = 0;
@@ -94,45 +111,16 @@ public class LearningSceneManager : MonoBehaviour
         for (int i = 0; i < parent1ADN.Length; i++)
             finalADN[i] = (i % 2 == 0 ? parent1ADN[i] : parent2ADN[i]);
 
-        Miscellaneous.arrayToString<float>(finalADN);
-
         return Mutate(finalADN);
     }
 
     private float[] Mutate(float[] ADN)
     {
-        /*System.Random random = new System.Random();
-        if(random.Next(1,10) == 1)
-            for (int i = 0; i < ADN.Length; i++)
-                if (random.Next(1, 50) == 1)
-                    ADN[i] = (float)(random.NextDouble()) * 2.0f - 1.0f;
-        return ADN;*/
         System.Random random = new System.Random();
-        int val;
         for (int i = 0; i < ADN.Length; i++)
-        {
-            val = random.Next(1, ADN.Length * 2);
-            if (val == 1)
+            if (random.Next(1, ADN.Length) == 1)
                 ADN[i] = (float)(random.NextDouble()) * 2.0f - 1.0f;
-        }
         return ADN;
-    }
-
-    private void AddRobot()
-    {
-        if (robotNum == 10)
-        {
-            NewGeneration();
-            return;
-        }
-
-        actualRobot = Instantiate(robotInstance);
-        robotNum++;
-
-        if (generation > 1)
-            actualRobot.GetComponent<Robot>().setADN(GenerateSonADN());
-        else
-            actualRobot.GetComponent<Robot>().setADN();
     }
 
     public void RobotDied(float[] ADN, int fitness)
