@@ -6,6 +6,7 @@ public class Robot : MonoBehaviour
 {
     private LearningSceneManager manager;
 
+    private Vector3 orginalPosition;
     private float speed;
     private float rotationSpeed;
 
@@ -37,8 +38,8 @@ public class Robot : MonoBehaviour
 
     void Start()
     {
+        orginalPosition = transform.position;
         manager = GameObject.Find("Manager").GetComponent<LearningSceneManager>();
-
         robotWidth = GetComponent<Renderer>().bounds.size.x;
         map = new CleanedSpaceMap(robotWidth);
     }
@@ -63,6 +64,8 @@ public class Robot : MonoBehaviour
             speed = 1;
         }
 
+        /***  ***/
+
 
         /*** Move the robot ***/
 
@@ -85,6 +88,17 @@ public class Robot : MonoBehaviour
     }
     public void SetADN(float[] ADN) {
         brain = new Perceptron(ADN);
+    }
+    public void SetADN(string ADN)
+    {
+        System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)
+        System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
+        customCulture.NumberFormat.NumberDecimalSeparator = ".";
+        System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
+
+        float[] ADNArray = Array.ConvertAll(ADN.Substring(1, ADN.Length - 2).Split(','), float.Parse);
+        brain = new Perceptron(ADNArray);
+        transform.position = orginalPosition;
     }
 
     public int GetFitness() {

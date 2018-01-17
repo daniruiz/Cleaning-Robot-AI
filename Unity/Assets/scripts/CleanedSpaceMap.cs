@@ -79,7 +79,7 @@ public class CleanedSpaceMap
         return new Vector2Int(x, y);
     }
 
-    private Vector2 AdjacentGrid(String side)
+    private Vector2 AdjacentGrid(string side)
     {
         Vector2Int position = Vector2ToPosition(playerPosition);
         int degreesDiference = side == "Left" ? -90
@@ -87,7 +87,5 @@ public class CleanedSpaceMap
         float x = (position.x * gridWidth) + (gridWidth / 2) + (gridWidth * (float)Math.Sin((Math.PI / 180) * (directionAngle + degreesDiference)));
         float y = (position.y * gridWidth) + (gridWidth / 2) + (gridWidth * (float)Math.Cos((Math.PI / 180) * (directionAngle + degreesDiference)));
         return new Vector2(x, y);
-    }
-
-    
+    }    
 }

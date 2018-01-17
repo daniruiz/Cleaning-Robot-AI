@@ -72,7 +72,7 @@ namespace dotBunny.Unity
         static string ProgramFilesx86()
 		{
 			if( 8 == IntPtr.Size 
-				|| (!String.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
+				|| (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"))))
 			{
 				return Environment.GetEnvironmentVariable("ProgramFiles(x86)");
 			}
@@ -930,9 +930,9 @@ namespace dotBunny.Unity
             string selectedFilePath = AssetDatabase.GetAssetPath(selected);
             string selectedFileExt = Path.GetExtension(selectedFilePath);
             if (selectedFileExt == null) {
-                selectedFileExt = String.Empty;
+                selectedFileExt = string.Empty;
             }
-            if (!String.IsNullOrEmpty(selectedFileExt)) {
+            if (!string.IsNullOrEmpty(selectedFileExt)) {
                 selectedFileExt = selectedFileExt.ToLower();
             }
 

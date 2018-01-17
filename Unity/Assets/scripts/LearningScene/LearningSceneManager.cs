@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class LearningSceneManager : MonoBehaviour
 {
-    private const String version = "2c"; 
+    private const string version = "2c"; 
 
     public GameObject robotInstance;
     private GameObject actualRobot;
@@ -13,6 +13,11 @@ public class LearningSceneManager : MonoBehaviour
 
     private float[] bestRobotADN;
     private int bestRobotFitness = 0;
+
+
+    private string ADNTextArea = "New ADN";
+    private bool InsertADN = false;
+
 
     private struct robotInfo
     {
@@ -31,7 +36,7 @@ public class LearningSceneManager : MonoBehaviour
 
     void Start()
     {
-        Time.timeScale = 1f;
+        Time.timeScale = 5;
         NewGeneration();
     }
 
@@ -68,10 +73,18 @@ public class LearningSceneManager : MonoBehaviour
                       "      R\tRestart\n" +
                       "      Esc\tClose\n\n" +
                       "    Speed: " + Math.Round(Time.timeScale, 1) + "\n\n" +
-                      "    Fitness: " + actualRobot.GetComponent<Robot>().GetFitness() + "\n\n" +
+                      "    Fitness: " + actualRobot.GetComponent<Robot>().GetFitness() + "\n" +
+                      "    Max Fitness: " + bestRobotFitness + "\n\n" +
                       "    Generation: " + generation + "\n" +
                       "    Robot Num.: " + robotNum;
-        GUI.TextField(new Rect(10, 10, 220, 320), text);
+        GUI.TextField(new Rect(10, 10, 220, 340), text);
+        ADNTextArea = GUI.TextArea(new Rect(10, 380, 220, 100), ADNTextArea);
+        InsertADN = GUI.Button(new Rect(150, 490, 80, 30), "Insert ADN");
+        if(InsertADN)
+        {
+            actualRobot.GetComponent<Robot>().SetADN(ADNTextArea);
+            ADNTextArea = "New ADN";
+        }
     }
 
     private void NewGeneration()
