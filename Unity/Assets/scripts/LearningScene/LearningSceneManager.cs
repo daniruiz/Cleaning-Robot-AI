@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class LearningSceneManager : MonoBehaviour
 {
-    private const string version = "2c"; 
+    private const string version = "2c-6"; 
 
     public GameObject robotInstance;
     private GameObject actualRobot;
@@ -52,7 +52,7 @@ public class LearningSceneManager : MonoBehaviour
         {
             TextEditor te = new TextEditor();
             te.content = new GUIContent(
-                Miscellaneous.arrayToString<float>(bestRobotADN));
+                Miscellaneous.ArrayToString<float>(bestRobotADN));
             te.SelectAll();
             te.Copy();
         }
@@ -82,9 +82,17 @@ public class LearningSceneManager : MonoBehaviour
         InsertADN = GUI.Button(new Rect(150, 490, 80, 30), "Insert ADN");
         if(InsertADN)
         {
-            actualRobot.GetComponent<Robot>().SetADN(ADNTextArea);
+            Miscellaneous.SetFloatStringFormat();
+        
+            float[] ADN = Array.ConvertAll(ADNTextArea.Substring(1, ADNTextArea.Length - 2).Split(','), float.Parse);
+            for (int i = 0; i < actualGenerationADNs.Length; i++)
+                actualGenerationADNs[i].ADN = ADN;
+            robotNum = 10;
+            actualRobot.GetComponent<Robot>().SetADN(ADN);
             ADNTextArea = "New ADN";
         }
+        string robotSensors = actualRobot.GetComponent<Robot>().GetSensorsString();
+        GUI.TextField(new Rect(240, 10, 400, 30), robotSensors);
     }
 
     private void NewGeneration()

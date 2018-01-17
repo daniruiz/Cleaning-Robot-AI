@@ -2,9 +2,10 @@
 
 public static class Miscellaneous
 {
-    public static string arrayToString<T>(T[] array)
+    public static string ArrayToString<T>(T[] array)
     {
         SetFloatStringFormat();
+        
         string s = "[";
         foreach (T val in array)
             s += val + ", ";

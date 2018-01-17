@@ -6,7 +6,6 @@ public class Robot : MonoBehaviour
 {
     private LearningSceneManager manager;
 
-    private Vector3 orginalPosition;
     private float speed;
     private float rotationSpeed;
 
@@ -38,7 +37,6 @@ public class Robot : MonoBehaviour
 
     void Start()
     {
-        orginalPosition = transform.position;
         manager = GameObject.Find("Manager").GetComponent<LearningSceneManager>();
         robotWidth = GetComponent<Renderer>().bounds.size.x;
         map = new CleanedSpaceMap(robotWidth);
@@ -87,22 +85,26 @@ public class Robot : MonoBehaviour
         brain = new Perceptron();
     }
     public void SetADN(float[] ADN) {
-        brain = new Perceptron(ADN);
+        Reset(ADN);
     }
-    public void SetADN(string ADN)
-    {
-        System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)
-        System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
-        customCulture.NumberFormat.NumberDecimalSeparator = ".";
-        System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
 
-        float[] ADNArray = Array.ConvertAll(ADN.Substring(1, ADN.Length - 2).Split(','), float.Parse);
-        brain = new Perceptron(ADNArray);
-        transform.position = orginalPosition;
+    private void Reset(float[] ADN)
+    {
+        map = new CleanedSpaceMap(robotWidth);
+        negativeFitness = 0;
+        GameObject.Find("Trail").GetComponent<TrailRenderer>().Clear();
+        dead = false;
+        brain = new Perceptron(ADN);
     }
 
     public int GetFitness() {
         return map.GetNumCleanedPositions() - negativeFitness;
+    }
+
+    public string GetSensorsString() {
+        bool[] sensorsArray = new bool[sensors.Count];
+        sensors.Values.CopyTo(sensorsArray, 0);
+        return Miscellaneous.ArrayToString(sensorsArray);
     }
 
     private void Move()
