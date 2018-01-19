@@ -4,10 +4,10 @@ using UnityEngine.SceneManagement;
 
 public class LearningSceneManager : MonoBehaviour
 {
-    private const string version = "2c-6"; 
+    private const string version = "2c-8"; 
 
     public GameObject robotInstance;
-    private GameObject actualRobot;
+    private Robot actualRobot;
     private int generation = 0;
     private int robotNum = 0;
 
@@ -47,7 +47,7 @@ public class LearningSceneManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         if (Input.GetKeyDown(KeyCode.Delete))
-            actualRobot.GetComponent<Robot>().Die();
+            actualRobot.Die();
         if (Input.GetKeyDown(KeyCode.C))
         {
             TextEditor te = new TextEditor();
@@ -73,14 +73,15 @@ public class LearningSceneManager : MonoBehaviour
                       "      R\tRestart\n" +
                       "      Esc\tClose\n\n" +
                       "    Speed: " + Math.Round(Time.timeScale, 1) + "\n\n" +
-                      "    Fitness: " + actualRobot.GetComponent<Robot>().GetFitness() + "\n" +
-                      "    Max Fitness: " + bestRobotFitness + "\n\n" +
+                      "    Actual robot Fitness: " + actualRobot.GetFitness() + "\n" +
+                      "    Actual robot Max. Fitness: " + actualRobot.GetMaxFitness() + "\n\n" +
+                      "    Max. Fitness: " + bestRobotFitness + "\n\n" +
                       "    Generation: " + generation + "\n" +
                       "    Robot Num.: " + robotNum;
-        GUI.TextField(new Rect(10, 10, 220, 340), text);
-        ADNTextArea = GUI.TextArea(new Rect(10, 380, 220, 100), ADNTextArea);
-        InsertADN = GUI.Button(new Rect(150, 490, 80, 30), "Insert ADN");
-        if(InsertADN)
+        GUI.TextField(new Rect(10, 10, 260, 340), text);
+        ADNTextArea = GUI.TextArea(new Rect(10, 380, 260, 100), ADNTextArea);
+        InsertADN = GUI.Button(new Rect(190, 490, 80, 30), "Insert ADN");
+        if (InsertADN)
         {
             Miscellaneous.SetFloatStringFormat();
         
@@ -88,11 +89,12 @@ public class LearningSceneManager : MonoBehaviour
             for (int i = 0; i < actualGenerationADNs.Length; i++)
                 actualGenerationADNs[i].ADN = ADN;
             robotNum = 10;
-            actualRobot.GetComponent<Robot>().SetADN(ADN);
+            actualRobot.SetADN(ADN);
             ADNTextArea = "New ADN";
         }
-        string robotSensors = actualRobot.GetComponent<Robot>().GetSensorsString();
-        GUI.TextField(new Rect(240, 10, 400, 30), robotSensors);
+        
+        string robotSensors = actualRobot.GetSensorsString();
+        GUI.TextField(new Rect(280, 10, 400, 30), robotSensors);
     }
 
     private void NewGeneration()
@@ -111,13 +113,13 @@ public class LearningSceneManager : MonoBehaviour
             return;
         }
 
-        actualRobot = Instantiate(robotInstance);
+        actualRobot = Instantiate(robotInstance).GetComponent<Robot>();
         robotNum++;
 
         if (generation > 1)
-            actualRobot.GetComponent<Robot>().SetADN(GenerateSonADN());
+            actualRobot.SetADN(GenerateSonADN());
         else
-            actualRobot.GetComponent<Robot>().SetADN();
+            actualRobot.SetADN();
     }
 
     private float[] GenerateSonADN()
@@ -157,10 +159,15 @@ public class LearningSceneManager : MonoBehaviour
         return ADN;
     }
 
+    public int GetBestRobotFitness()
+    {
+        return bestRobotFitness;
+    }
+    
     public void RobotDied(float[] ADN, int fitness)
     {
         actualGenerationADNs[robotNum - 1] = new robotInfo(fitness, ADN);
-        if(fitness > bestRobotFitness)
+        if (fitness > bestRobotFitness)
         {
             bestRobotFitness = fitness;
             bestRobotADN = ADN;
