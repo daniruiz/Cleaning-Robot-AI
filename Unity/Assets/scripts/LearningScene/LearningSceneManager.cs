@@ -36,9 +36,20 @@ public class LearningSceneManager : MonoBehaviour
 
     void Start()
     {
+#if !UNITY_EDITOR && UNITY_WEBGL
+        WebGLInput.captureAllKeyboardInput = false;
+#endif
+
         Time.timeScale = 5;
         NewGeneration();
     }
+
+#if !UNITY_EDITOR && UNITY_WEBGL
+    public void captureKeyboard(int i)
+    {
+        WebGLInput.captureAllKeyboardInput = (i == 1 ? true : false);
+    }
+#endif
 
     void Update()
     {
@@ -50,9 +61,12 @@ public class LearningSceneManager : MonoBehaviour
             actualRobot.Die();
         if (Input.GetKeyDown(KeyCode.C))
         {
+            string bestADNString = Miscellaneous.ArrayToString<float>(bestRobotADN);
+#if !UNITY_EDITOR && UNITY_WEBGL
+        Application.ExternalCall("copyBestADN", bestADNString);
+#endif
             TextEditor te = new TextEditor();
-            te.content = new GUIContent(
-                Miscellaneous.ArrayToString<float>(bestRobotADN));
+            te.content = new GUIContent(bestADNString);
             te.SelectAll();
             te.Copy();
         }
@@ -71,7 +85,10 @@ public class LearningSceneManager : MonoBehaviour
                       "      C\tCopy best ADN to clipboard\n" +
                       "      Del\tKill actual robot\n" +
                       "      R\tRestart\n" +
-                      "      Esc\tClose\n\n" +
+#if UNITY_EDITOR && !UNITY_WEBGL
+                      "      Esc\tClose\n" +
+#endif
+                      "\n" +
                       "    Speed: " + Math.Round(Time.timeScale, 1) + "\n\n" +
                       "    Actual robot Fitness: " + actualRobot.GetFitness() + "\n" +
                       "    Actual robot Max. Fitness: " + actualRobot.GetMaxFitness() + "\n\n" +
@@ -79,16 +96,19 @@ public class LearningSceneManager : MonoBehaviour
                       "    Generation: " + generation + "\n" +
                       "    Robot Num.: " + robotNum;
         GUI.TextField(new Rect(10, 10, 260, 340), text);
+#if UNITY_EDITOR && !UNITY_WEBGL
         ADNTextArea = GUI.TextArea(new Rect(10, 380, 260, 100), ADNTextArea);
         insertADNButton = GUI.Button(new Rect(190, 490, 80, 30), "Insert ADN");
+#endif
         if (insertADNButton)
         {
             InsertADN(ADNTextArea);
             ADNTextArea = "New ADN";
         }
-
+#if UNITY_EDITOR && !UNITY_WEBGL
         string robotSensors = actualRobot.GetSensorsString();
         GUI.TextField(new Rect(280, 10, 400, 30), robotSensors);
+#endif
     }
 
     public void InsertADN(string ADNString)
