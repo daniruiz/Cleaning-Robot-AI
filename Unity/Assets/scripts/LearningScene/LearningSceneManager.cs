@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class LearningSceneManager : MonoBehaviour
 {
-    private const string version = "2c-8"; 
+    private const string version = "2c-8";
 
     public GameObject robotInstance;
     private Robot actualRobot;
@@ -16,7 +16,7 @@ public class LearningSceneManager : MonoBehaviour
 
 
     private string ADNTextArea = "New ADN";
-    private bool InsertADN = false;
+    private bool insertADNButton = false;
 
 
     private struct robotInfo
@@ -80,21 +80,26 @@ public class LearningSceneManager : MonoBehaviour
                       "    Robot Num.: " + robotNum;
         GUI.TextField(new Rect(10, 10, 260, 340), text);
         ADNTextArea = GUI.TextArea(new Rect(10, 380, 260, 100), ADNTextArea);
-        InsertADN = GUI.Button(new Rect(190, 490, 80, 30), "Insert ADN");
-        if (InsertADN)
+        insertADNButton = GUI.Button(new Rect(190, 490, 80, 30), "Insert ADN");
+        if (insertADNButton)
         {
-            Miscellaneous.SetFloatStringFormat();
-        
-            float[] ADN = Array.ConvertAll(ADNTextArea.Substring(1, ADNTextArea.Length - 2).Split(','), float.Parse);
-            for (int i = 0; i < actualGenerationADNs.Length; i++)
-                actualGenerationADNs[i].ADN = ADN;
-            robotNum = 10;
-            actualRobot.SetADN(ADN);
+            InsertADN(ADNTextArea);
             ADNTextArea = "New ADN";
         }
-        
+
         string robotSensors = actualRobot.GetSensorsString();
         GUI.TextField(new Rect(280, 10, 400, 30), robotSensors);
+    }
+
+    public void InsertADN(string ADNString)
+    {
+        Miscellaneous.SetFloatStringFormat();
+
+        float[] ADN = Array.ConvertAll(ADNString.Substring(1, ADNString.Length - 2).Split(','), float.Parse);
+        for (int i = 0; i < actualGenerationADNs.Length; i++)
+            actualGenerationADNs[i].ADN = ADN;
+        robotNum = 10;
+        actualRobot.SetADN(ADN);
     }
 
     private void NewGeneration()
@@ -163,7 +168,7 @@ public class LearningSceneManager : MonoBehaviour
     {
         return bestRobotFitness;
     }
-    
+
     public void RobotDied(float[] ADN, int fitness)
     {
         actualGenerationADNs[robotNum - 1] = new robotInfo(fitness, ADN);

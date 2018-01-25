@@ -13,10 +13,10 @@ public class Robot : MonoBehaviour
     private bool dead = false;
     private int negativeFitness = 0;
     private int maxFitness = 0;
-    
+
     private Dictionary<string, bool> sensors = new Dictionary<string, bool>();
     private CleanedSpaceMap map;
-    private Perceptron brain;    
+    private Perceptron brain;
 
     void Awake()
     {
@@ -27,7 +27,7 @@ public class Robot : MonoBehaviour
         sensors.Add("Left Button", false);
         sensors.Add("Front Button", false);
         sensors.Add("Right Button", false);
-        
+
         sensors.Add("Right Wall Sensor", false);
 
         sensors.Add("Left Grid Cleaned", false);
@@ -45,8 +45,8 @@ public class Robot : MonoBehaviour
     void Update()
     {
         if (GetFitness() > maxFitness) maxFitness = GetFitness();
-    
-    
+
+
         sensors["Left Grid Cleaned"] = map.IsLeftGridCleaned();
         sensors["Front Grid Cleaned"] = map.IsFrontGridCleaned();
         sensors["Right Grid Cleaned"] = map.IsRightGridCleaned();
