@@ -11,28 +11,28 @@ public class LearningSceneManager : MonoBehaviour
     private int generation = 0;
     private int robotNum = 0;
 
-    private float[] bestRobotADN;
+    private float[] bestRobotDNA;
     private int bestRobotFitness = 0;
 
 
-    private string ADNTextArea = "New ADN";
-    private bool insertADNButton = false;
+    private string DNATextArea = "New DNA";
+    private bool insertDNAButton = false;
 
 
     private struct robotInfo
     {
         public int fitness;
-        public float[] ADN;
+        public float[] DNA;
 
-        public robotInfo(int fitness, float[] ADN)
+        public robotInfo(int fitness, float[] DNA)
         {
             this.fitness = fitness;
-            this.ADN = ADN;
+            this.DNA = DNA;
         }
     }
 
-    private robotInfo[] oldGenerationADNs = new robotInfo[10];
-    private robotInfo[] actualGenerationADNs = new robotInfo[10];
+    private robotInfo[] oldGenerationDNAs = new robotInfo[10];
+    private robotInfo[] actualGenerationDNAs = new robotInfo[10];
 
     void Start()
     {
@@ -61,12 +61,12 @@ public class LearningSceneManager : MonoBehaviour
             actualRobot.Die();
         if (Input.GetKeyDown(KeyCode.C))
         {
-            string bestADNString = Miscellaneous.ArrayToString<float>(bestRobotADN);
+            string bestDNAString = Miscellaneous.ArrayToString<float>(bestRobotDNA);
 #if !UNITY_EDITOR && UNITY_WEBGL
-        Application.ExternalCall("copyBestADN", bestADNString);
+        Application.ExternalCall("copyBestDNA", bestDNAString);
 #endif
             TextEditor te = new TextEditor();
-            te.content = new GUIContent(bestADNString);
+            te.content = new GUIContent(bestDNAString);
             te.SelectAll();
             te.Copy();
         }
@@ -82,7 +82,7 @@ public class LearningSceneManager : MonoBehaviour
                       "\n    Controls\n\n" +
                       "      +\tFaster\n" +
                       "      -\tSlower\n" +
-                      "      C\tCopy best ADN to clipboard\n" +
+                      "      C\tCopy best DNA to clipboard\n" +
                       "      Del\tKill actual robot\n" +
                       "      R\tRestart\n" +
 #if UNITY_EDITOR && !UNITY_WEBGL
@@ -97,13 +97,13 @@ public class LearningSceneManager : MonoBehaviour
                       "    Robot Num.: " + robotNum;
         GUI.TextField(new Rect(10, 10, 260, 340), text);
 #if UNITY_EDITOR && !UNITY_WEBGL
-        ADNTextArea = GUI.TextArea(new Rect(10, 380, 260, 100), ADNTextArea);
-        insertADNButton = GUI.Button(new Rect(190, 490, 80, 30), "Insert ADN");
+        DNATextArea = GUI.TextArea(new Rect(10, 380, 260, 100), DNATextArea);
+        insertDNAButton = GUI.Button(new Rect(190, 490, 80, 30), "Insert DNA");
 #endif
-        if (insertADNButton)
+        if (insertDNAButton)
         {
-            InsertADN(ADNTextArea);
-            ADNTextArea = "New ADN";
+            InsertDNA(DNATextArea);
+            DNATextArea = "New DNA";
         }
 #if UNITY_EDITOR && !UNITY_WEBGL
         string robotSensors = actualRobot.GetSensorsString();
@@ -111,20 +111,20 @@ public class LearningSceneManager : MonoBehaviour
 #endif
     }
 
-    public void InsertADN(string ADNString)
+    public void InsertDNA(string DNAString)
     {
         Miscellaneous.SetFloatStringFormat();
 
-        float[] ADN = Array.ConvertAll(ADNString.Substring(1, ADNString.Length - 2).Split(','), float.Parse);
-        for (int i = 0; i < actualGenerationADNs.Length; i++)
-            actualGenerationADNs[i].ADN = ADN;
+        float[] DNA = Array.ConvertAll(DNAString.Substring(1, DNAString.Length - 2).Split(','), float.Parse);
+        for (int i = 0; i < actualGenerationDNAs.Length; i++)
+            actualGenerationDNAs[i].DNA = DNA;
         robotNum = 10;
-        actualRobot.SetADN(ADN);
+        actualRobot.SetDNA(DNA);
     }
 
     private void NewGeneration()
     {
-        oldGenerationADNs = actualGenerationADNs;
+        oldGenerationDNAs = actualGenerationDNAs;
         robotNum = 0;
         generation++;
         AddRobot();
@@ -142,46 +142,46 @@ public class LearningSceneManager : MonoBehaviour
         robotNum++;
 
         if (generation > 1)
-            actualRobot.SetADN(GenerateSonADN());
+            actualRobot.SetDNA(GenerateSonDNA());
         else
-            actualRobot.SetADN();
+            actualRobot.SetDNA();
     }
 
-    private float[] GenerateSonADN()
+    private float[] GenerateSonDNA()
     {
         int totalFitnessSum = 0;
-        foreach (robotInfo info in oldGenerationADNs)
+        foreach (robotInfo info in oldGenerationDNAs)
             totalFitnessSum += info.fitness;
         System.Random random = new System.Random();
         int randomPos1 = random.Next(1, totalFitnessSum);
         int randomPos2 = random.Next(1, totalFitnessSum);
 
-        float[] parent1ADN = null;
-        float[] parent2ADN = null;
+        float[] parent1DNA = null;
+        float[] parent2DNA = null;
         int fitnessCounter = 0;
-        for (int i = 0; i < oldGenerationADNs.Length; i++)
+        for (int i = 0; i < oldGenerationDNAs.Length; i++)
         {
-            fitnessCounter += oldGenerationADNs[i].fitness;
-            if (parent1ADN == null && randomPos1 <= fitnessCounter)
-                parent1ADN = oldGenerationADNs[i].ADN;
-            if (parent2ADN == null && randomPos2 <= fitnessCounter)
-                parent2ADN = oldGenerationADNs[i].ADN;
+            fitnessCounter += oldGenerationDNAs[i].fitness;
+            if (parent1DNA == null && randomPos1 <= fitnessCounter)
+                parent1DNA = oldGenerationDNAs[i].DNA;
+            if (parent2DNA == null && randomPos2 <= fitnessCounter)
+                parent2DNA = oldGenerationDNAs[i].DNA;
         }
 
-        float[] finalADN = new float[parent1ADN.Length];
-        for (int i = 0; i < parent1ADN.Length; i++)
-            finalADN[i] = (i % 2 == 0 ? parent1ADN[i] : parent2ADN[i]);
+        float[] finalDNA = new float[parent1DNA.Length];
+        for (int i = 0; i < parent1DNA.Length; i++)
+            finalDNA[i] = (i % 2 == 0 ? parent1DNA[i] : parent2DNA[i]);
 
-        return Mutate(finalADN);
+        return Mutate(finalDNA);
     }
 
-    private float[] Mutate(float[] ADN)
+    private float[] Mutate(float[] DNA)
     {
         System.Random random = new System.Random();
-        for (int i = 0; i < ADN.Length; i++)
-            if (random.Next(1, ADN.Length) == 1)
-                ADN[i] = (float)(random.NextDouble()) * 2.0f - 1.0f;
-        return ADN;
+        for (int i = 0; i < DNA.Length; i++)
+            if (random.Next(1, DNA.Length) == 1)
+                DNA[i] = (float)(random.NextDouble()) * 2.0f - 1.0f;
+        return DNA;
     }
 
     public int GetBestRobotFitness()
@@ -189,13 +189,13 @@ public class LearningSceneManager : MonoBehaviour
         return bestRobotFitness;
     }
 
-    public void RobotDied(float[] ADN, int fitness)
+    public void RobotDied(float[] DNA, int fitness)
     {
-        actualGenerationADNs[robotNum - 1] = new robotInfo(fitness, ADN);
+        actualGenerationDNAs[robotNum - 1] = new robotInfo(fitness, DNA);
         if (fitness > bestRobotFitness)
         {
             bestRobotFitness = fitness;
-            bestRobotADN = ADN;
+            bestRobotDNA = DNA;
 
         }
         AddRobot();

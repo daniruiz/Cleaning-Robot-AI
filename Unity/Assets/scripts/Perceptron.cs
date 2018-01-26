@@ -79,26 +79,26 @@ public class Perceptron
 
 
 
-    public float[] GetPerceptronADN()
+    public float[] GetPerceptronDNA()
     {
         int numWeights = weights[0].Length * weights[0][0].Length + weights[1].Length * weights[1][0].Length;
-        float[] ADN = new float[numWeights];
+        float[] DNA = new float[numWeights];
 
-        int ADNPosition = 0;
+        int DNAPosition = 0;
 
         for (int i = 0; i < weights[0].Length; i++)
             for (int j = 0; j < weights[0][i].Length; j++)
             {
-                ADN[ADNPosition] = weights[0][i][j];
-                ADNPosition++;
+                DNA[DNAPosition] = weights[0][i][j];
+                DNAPosition++;
             }
         for (int i = 0; i < weights[1].Length; i++)
             for (int j = 0; j < weights[1][i].Length; j++)
             {
-                ADN[ADNPosition] = weights[1][i][j];
-                ADNPosition++;
+                DNA[DNAPosition] = weights[1][i][j];
+                DNAPosition++;
             }
 
-        return ADN;
+        return DNA;
     }
 }

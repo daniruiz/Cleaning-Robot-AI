@@ -85,22 +85,22 @@ public class Robot : MonoBehaviour
 
     }
 
-    public void SetADN()
+    public void SetDNA()
     {
         brain = new Perceptron();
     }
-    public void SetADN(float[] ADN)
+    public void SetDNA(float[] DNA)
     {
-        Reset(ADN);
+        Reset(DNA);
     }
 
-    private void Reset(float[] ADN)
+    private void Reset(float[] DNA)
     {
         map = new CleanedSpaceMap(robotWidth);
         negativeFitness = 0;
         GameObject.Find("Trail").GetComponent<TrailRenderer>().Clear();
         dead = false;
-        brain = new Perceptron(ADN);
+        brain = new Perceptron(DNA);
     }
 
     public int GetFitness()
@@ -140,8 +140,8 @@ public class Robot : MonoBehaviour
     {
         if (dead) return;
         dead = true;
-        float[] ADN = brain.GetPerceptronADN();
-        manager.RobotDied(ADN, GetMaxFitness());
+        float[] DNA = brain.GetPerceptronDNA();
+        manager.RobotDied(DNA, GetMaxFitness());
         Destroy(gameObject);
     }
 
