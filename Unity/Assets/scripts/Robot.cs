@@ -42,7 +42,7 @@ public class Robot : MonoBehaviour
         map = new CleanedSpaceMap(robotWidth);
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (GetFitness() > maxFitness) maxFitness = GetFitness();
 
